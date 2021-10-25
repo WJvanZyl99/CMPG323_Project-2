@@ -9,7 +9,7 @@ namespace Domain.Models
     {
         public Album()
         {
-            Shareds = new HashSet<Shared>();
+            Shared = new HashSet<Shared>();
         }
 
         public int Idalbums { get; set; }
@@ -18,6 +18,6 @@ namespace Domain.Models
         public int User { get; set; }
         public string Caption { get; set; }
 
-        public virtual ICollection<Shared> Shareds { get; set; }
+        public virtual ICollection<Shared> Shared { get; set; }
     }
 }
