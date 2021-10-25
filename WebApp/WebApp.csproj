@@ -1,17 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-WebApp-642CB115-1B01-4150-8E56-D0D8595509A3</UserSecretsId>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>0c26d45d-c4d2-47e5-87ad-eee5c703a7ad</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.19" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.19" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.19" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.19" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.19" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
   </ItemGroup>
 
