@@ -1,5 +1,5 @@
 ﻿using System.Configuration;
-using Repository.Models;
+using Database.Models;
 
 namespace Repository
 {
