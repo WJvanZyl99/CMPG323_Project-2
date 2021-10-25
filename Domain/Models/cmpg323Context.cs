@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace Domain.Models
+namespace Repository.Models
 {
     public partial class cmpg323Context : DbContext
     {
