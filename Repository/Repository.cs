@@ -5,11 +5,11 @@ namespace Repository
 {
     class Repository
     {
-        cmpg323Context DB;
+        Cmpg323Context DB;
 
         public Repository()
         {
-            DB = new cmpg323Context(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
+            DB = new Cmpg323Context(ConfigurationManager.ConnectionStrings["database"].ConnectionString);
             DB.Database.EnsureCreated();
             DB.SaveChanges();
         }

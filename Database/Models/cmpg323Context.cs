@@ -6,16 +6,16 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Database.Models
 {
-    public partial class cmpg323Context : DbContext
+    public partial class Cmpg323Context : DbContext
     {
-        private string con_str;
+        private readonly string _conStr;
 
-        public cmpg323Context(string connection_string)
+        public Cmpg323Context(string connectionString)
         {
-            con_str = connection_string;
+            _conStr = connectionString;
         }
 
-        public cmpg323Context(DbContextOptions<cmpg323Context> options)
+        public Cmpg323Context(DbContextOptions<Cmpg323Context> options)
             : base(options)
         {
         }
@@ -33,7 +33,7 @@ namespace Database.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL(con_str);
+                optionsBuilder.UseMySQL(_conStr);
             }
         }
 
@@ -270,7 +270,7 @@ namespace Database.Models
                     .HasColumnName("user");
 
                 entity.HasOne(d => d.AlbumNavigation)
-                    .WithMany(p => p.Shareds)
+                    .WithMany(p => p.Shared)
                     .HasForeignKey(d => d.Album)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_shared_album_albums");
