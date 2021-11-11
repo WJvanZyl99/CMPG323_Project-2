@@ -1,12 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
 namespace Database.Models
 {
-    public partial class Cmpg323Context : DbContext
+    public class Cmpg323Context : DbContext
     {
         private readonly string _conStr;
 
@@ -305,16 +303,12 @@ namespace Database.Models
                 entity.Property(e => e.Password)
                     .HasMaxLength(64)
                     .HasColumnName("password")
-                    .IsFixedLength(true);
+                    .IsFixedLength();
 
                 entity.Property(e => e.Surname)
                     .HasMaxLength(45)
                     .HasColumnName("surname");
             });
-
-            OnModelCreatingPartial(modelBuilder);
         }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
