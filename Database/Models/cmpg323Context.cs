@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 #nullable disable
 
@@ -8,9 +9,9 @@ namespace Database.Models
     {
         private readonly string _conStr;
 
-        public Cmpg323Context(string connectionString)
+        public Cmpg323Context()
         {
-            _conStr = connectionString;
+            _conStr = ConfigurationManager.ConnectionStrings["database"].ConnectionString;
         }
 
         public Cmpg323Context(DbContextOptions<Cmpg323Context> options)
