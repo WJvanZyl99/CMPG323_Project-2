@@ -1,10 +1,11 @@
 ﻿using Database.Models;
+using Settings;
 using System;
-using System.Configuration;
 
-namespace Logic.Users
+
+namespace Logic
 {
-    class UserSession
+    public class UserSession
     {
         private DateTime login_date_time;
         private DateTime last_active_date_time;
@@ -24,8 +25,8 @@ namespace Logic.Users
 
         public bool is_active()
         {
-            TimeSpan idle_max = new TimeSpan(0, Int32.Parse(ConfigurationManager.AppSettings["SessionUptimeLimts:IdleMax"]), 0);
-            TimeSpan session_max = new TimeSpan(0, Int32.Parse(ConfigurationManager.AppSettings["SessionUptimeLimts:SessionMax"]), 0);
+            TimeSpan idle_max = new TimeSpan(0, UserSessionSettings.idle_max, 0);
+            TimeSpan session_max = new TimeSpan(0, UserSessionSettings.session_max, 0);
             if (active 
                 && (DateTime.Now - last_active_date_time) < idle_max
                 && (DateTime.Now - login_date_time) < session_max)

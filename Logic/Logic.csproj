@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database\Database.csproj" />
+    <ProjectReference Include="..\Database\Database.csproj">
+      <EmbedInteropTypes></EmbedInteropTypes>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

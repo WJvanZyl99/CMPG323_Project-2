@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Database\Databa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settings", "Settings\Settings.csproj", "{6524F5E1-88D7-409A-8BAF-AB8B3A5F1254}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorClassLibrary1", "RazorClassLibrary1\RazorClassLibrary1.csproj", "{EEBD089F-BFBE-4B16-B722-0C842E291248}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6524F5E1-88D7-409A-8BAF-AB8B3A5F1254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6524F5E1-88D7-409A-8BAF-AB8B3A5F1254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6524F5E1-88D7-409A-8BAF-AB8B3A5F1254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEBD089F-BFBE-4B16-B722-0C842E291248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEBD089F-BFBE-4B16-B722-0C842E291248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEBD089F-BFBE-4B16-B722-0C842E291248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEBD089F-BFBE-4B16-B722-0C842E291248}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

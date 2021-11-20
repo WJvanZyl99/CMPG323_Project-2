@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Settings;
 
 namespace WebApp
 {
@@ -25,6 +26,10 @@ namespace WebApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(UserSessionSettings.idle_max);
+            });
             services.AddRazorPages();
             services.AddServerSideBlazor();
         }
@@ -47,6 +52,8 @@ namespace WebApp
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

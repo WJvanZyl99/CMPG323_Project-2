@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.Users
+namespace Logic
 {
-    class Password
+    public class Password
     {
         private string encoded_password;
         public Password(string raw_password)
