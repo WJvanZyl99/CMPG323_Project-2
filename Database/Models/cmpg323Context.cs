@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Configuration;
+using static Settings.DatabaseSettings;
 
 #nullable disable
 
@@ -9,14 +9,21 @@ namespace Database.Models
     {
         private readonly string _conStr;
 
-        public Cmpg323Context()
+        public static Cmpg323Context DB;
+
+        private Cmpg323Context() 
         {
-            _conStr = ConfigurationManager.ConnectionStrings["database"].ConnectionString;
+            _conStr = connection_string;
+            this.Database.EnsureCreated();
+            DB = this;
         }
 
-        public Cmpg323Context(DbContextOptions<Cmpg323Context> options)
-            : base(options)
+        public static Cmpg323Context init()
         {
+            if (DB != null)
+                return DB;
+            else
+                return new Cmpg323Context();
         }
 
         public virtual DbSet<Album> Albums { get; set; }
