@@ -1,38 +1,107 @@
 ﻿@page "/my-images"
 @inject StateContainer StateContainer
 @using Database.Models
+@inject NavigationManager NavManager
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment Environment
 
 <h3>My Images</h3>
-<h3>@StateContainer.user.Images.ToList().Count()</h3>
 
 <table style="width:100%;">
-    @for(int i = 0; i < images.Count(); i++)
-     {
-         <tr>
-              @for(int j = 0; j < 3; j++)
-              {
-                 <td>
-                     <img src="@images[i].Name" alt="" />
-                 </td>
-                 i++;
-              }
-         </tr>
-     }
+
+    @foreach (var blk in blocks)
+    {
+        if (counter % 3 == 1)
+        {
+            @:<tr>
+            }
+
+            <td style="width: 33%;border:5px solid black;">
+                <img style="max-height:100%;max-width:100%;width:100%;" src="@blk.path" alt="" />
+                <label class="form-control">
+                    @if (blk.img.DateCreated != null)
+                    {
+                        <text>@blk.img.DateCreated.Value.ToString("d-MMMM-yyyy")</text>
+                     }
+                    </label>
+                <input class="form-control" type="button" value="Delete" @onclick="() => delete(blk.img)" /><br/>
+                <table>
+                    <tr>
+                        <td>
+                            <input class="form-control" type="text" @bind="blk.share_text"/>
+                        </td>
+                        <td>
+                            <input class="form-control" type="button" value="Share" @onclick="() => share(blk)"/>
+                        </td>
+                    </tr>
+                    <tr>@blk.shared_with</tr>
+                </table>
+                
+            </td>
+
+            if (counter % 3 == 0 || blk == blocks.Last())
+            {
+            @:</tr>
+        }
+        counter++;
+        if (counter == 4)
+            counter = 1;
+    }
+
 </table>
 
 @code {
 
-    List<Image> images;
+    int counter = 1;
+    List<block> blocks;
+
+    class block
+    {
+        public Image img;
+        public string path;
+        public string shared_with;
+        public string share_text;
+    }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        images = StateContainer.user.Images.ToList();
+        List<Image> images = Cmpg323Context.DB.Images.Where(i => i.User == StateContainer.user.Idusers).ToList();
+        blocks = new List<block>();
+        foreach(var image in images)
+        {
+            block b = new block();
+            b.img = image;
+            b.path = Path.Combine("Data", StateContainer.user.Idusers.ToString(), image.Name);
+            b.shared_with = "";
+            foreach (var share in Cmpg323Context.DB.Shareds.Where(s => s.Image == image.Idimages).ToList())
+                b.shared_with += Cmpg323Context.DB.Users.Find(share.User).Name;
+            if (b.shared_with != "")
+                b.shared_with = "Shared with: " + b.shared_with;
+            blocks.Add(b);
+        }
     }
 
-    int getRowCount()
+    void delete(Image image)
     {
-        return (images.Count() - images.Count() % 3) / 3;
+        File.Delete($"{Environment.WebRootPath}/Data/{StateContainer.user.Idusers.ToString()}/{image.Name}");
+        Cmpg323Context.DB.Images.Remove(image);
+        Cmpg323Context.DB.SaveChanges();
+        NavManager.NavigateTo("/my-images", true);
     }
 
+    void share(block blk)
+    {
+        if(Cmpg323Context.DB.Users.Where(u => u.Email == blk.share_text).Count() > 0)
+        {
+            User user = Cmpg323Context.DB.Users.Where(u => u.Email == blk.share_text).First();
+            Database.Models.Shared share = new Database.Models.Shared();
+            share.User = user.Idusers;
+            share.Image = blk.img.Idimages;
+            Cmpg323Context.DB.Shareds.Add(share);
+            Cmpg323Context.DB.SaveChanges();
+        }
+        NavManager.NavigateTo("/my-images", true);
+    }
 }

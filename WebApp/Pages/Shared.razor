@@ -1,0 +1,67 @@
+﻿@page "/shared"
+
+@inject StateContainer StateContainer
+@using Database.Models
+@inject NavigationManager NavManager
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment Environment
+
+<h3>Shared With Me</h3>
+
+<table style="width:100%;">
+
+    @foreach (var blk in blocks)
+    {
+        if (counter % 3 == 1)
+        {
+            @:<tr>
+            }
+
+            <td style="width: 33%;border:5px solid black;">
+                <img style="max-height:100%;max-width:100%;width:100%;" src="@blk.path" alt="" />
+                <label class="form-control">
+                    @if (blk.img.DateCreated != null)
+                    {
+                        <text>@blk.img.DateCreated.Value.ToString("d-MMMM-yyyy")</text><br />
+                    }
+                </label>
+
+            </td>
+
+            if (counter % 3 == 0 || blk == blocks.Last())
+            {
+            @:</tr>
+        }
+        counter++;
+        if (counter == 4)
+            counter = 1;
+    }
+
+</table>
+
+@code {
+
+    int counter = 1;
+    List<block> blocks;
+
+    class block
+    {
+        public Image img;
+        public string path;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var shares = Cmpg323Context.DB.Shareds.Where(s => s.User == StateContainer.user.Idusers).ToList();
+        blocks = new List<block>();
+        foreach (var share in shares)
+        {
+            block b = new block();
+            b.img = Cmpg323Context.DB.Images.Find(share.Image);
+            b.path = Path.Combine("Data", b.img.User.ToString(), b.img.Name);
+            blocks.Add(b);
+        }
+    }
+}
