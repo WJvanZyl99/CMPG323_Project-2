@@ -6,81 +6,27 @@
 @using System.IO
 @using Microsoft.AspNetCore.Hosting
 @inject IWebHostEnvironment Environment
+@using WebApp.Pages.LoggedInViews.SharedParts
 
 <h3>Shared With Me</h3>
 
-<table style="width:100%;">
-
-    @foreach (var blk in blocks)
-    {
-        if (counter % 3 == 1)
-        {
-            @:<tr>
-            }
-
-            <td style="width: 33%;border:5px solid black;">
-                <img style="max-height:100%;max-width:100%;width:100%;" src="@blk.path" alt="" />
-                <label class="form-control">
-                    @if (blk.img.DateCreated != null)
-                    {
-                        <text>Uploaded On: @blk.img.DateCreated.Value.ToString("d-MMMM-yyyy")</text><br />
-                    }
-                </label>
-                <table>
-                    <tr>
-                        <td>
-                            <input class="form-control" placeholder="Caption" type="text" @bind="blk.caption_text" />
-                        </td>
-                        <td>
-                            <input class="form-control" type="button" value="Update" @onclick="e => updateCaption(blk)" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-
-            if (counter % 3 == 0 || blk == blocks.Last())
-            {
-            @:</tr>
-        }
-        counter++;
-        if (counter == 4)
-            counter = 1;
-    
-    }
-
-</table>
+<BlockTable blocks="blocks" user="StateContainer.user" url="@url" columnCount="3"/>
 
 @code {
+    List<Block> blocks;
 
-    int counter = 1;
-    List<block> blocks;
-
-    class block
-    {
-        public Image img;
-        public string path;
-        public string caption_text;
-    }
+    string url = "/shared";
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
         var shares = Cmpg323Context.DB.Shareds.Where(s => s.User == StateContainer.user.Idusers).ToList();
-        blocks = new List<block>();
+        blocks = new List<Block>();
         foreach (var share in shares)
         {
-            block b = new block();
-            b.img = Cmpg323Context.DB.Images.Find(share.Image);
-            b.caption_text = b.img.Caption;
-            b.path = Path.Combine("Data", b.img.User.ToString(), b.img.Name);
+            Image img = Cmpg323Context.DB.Images.Find(share.Image);
+            Block b = new Block(img, Path.Combine("Data", img.User.ToString(), img.Name));
             blocks.Add(b);
         }
-    }
-
-    void updateCaption(block blk)
-    {
-        blk.img.Caption = blk.caption_text;
-        Cmpg323Context.DB.SaveChanges();
-        NavManager.NavigateTo("/shared", true);
     }
 }

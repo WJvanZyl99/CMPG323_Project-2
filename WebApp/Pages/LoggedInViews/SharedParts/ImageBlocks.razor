@@ -32,9 +32,9 @@
     {
         <tr>
             <td colspan="2">
-                @if (block.img.Shareds.Count > 0)
+                @if (Cmpg323Context.DB.Shareds.Where(s => s.Image == block.img.Idimages).Count() > 0)
                 {
-                    @foreach (Database.Models.Shared share in block.img.Shareds)
+                    @foreach (Database.Models.Shared share in Cmpg323Context.DB.Shareds.Where(s => s.Image == block.img.Idimages).ToList())
                     {
                         User user = Cmpg323Context.DB.Users.Find(share.User);
                         if (block.hasShareDelete)
