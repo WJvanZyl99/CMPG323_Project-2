@@ -27,8 +27,6 @@ namespace Database.Models
         }
 
         public virtual DbSet<Album> Albums { get; set; }
-        public virtual DbSet<Directory> Directories { get; set; }
-        public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<LogCategory> LogCategories { get; set; }
@@ -71,83 +69,12 @@ namespace Database.Models
                     .HasColumnName("user");
             });
 
-            modelBuilder.Entity<Directory>(entity =>
-            {
-                entity.HasKey(e => e.Iddirectories)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("directories");
-
-                entity.HasIndex(e => e.Parent, "FK_directories_parent_directories_idx");
-
-                entity.Property(e => e.Iddirectories)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("iddirectories");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(100)
-                    .HasColumnName("name");
-
-                entity.Property(e => e.Parent)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("parent");
-
-                entity.HasOne(d => d.ParentNavigation)
-                    .WithMany(p => p.InverseParentNavigation)
-                    .HasForeignKey(d => d.Parent)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_directories_parent_directories");
-            });
-
-            modelBuilder.Entity<File>(entity =>
-            {
-                entity.HasKey(e => e.Idfiles)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("files");
-
-                entity.HasIndex(e => e.Directory, "FK_files_directory_directories_idx");
-
-                entity.HasIndex(e => e.User, "FK_files_user_users_idx");
-
-                entity.Property(e => e.Idfiles)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("idfiles");
-
-                entity.Property(e => e.DateUploaded).HasColumnName("date_uploaded");
-
-                entity.Property(e => e.Directory)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("directory");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(100)
-                    .HasColumnName("name");
-
-                entity.Property(e => e.User)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("user");
-
-                entity.HasOne(d => d.DirectoryNavigation)
-                    .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.Directory)
-                    .HasConstraintName("FK_files_directory_directories");
-
-                entity.HasOne(d => d.UserNavigation)
-                    .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.User)
-                    .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("FK_files_user_users");
-            });
-
             modelBuilder.Entity<Image>(entity =>
             {
                 entity.HasKey(e => e.Idimages)
                     .HasName("PRIMARY");
 
                 entity.ToTable("images");
-
-                entity.HasIndex(e => e.File, "FK_images_file_files_idx");
 
                 entity.HasIndex(e => e.User, "FK_images_user_users_idx");
 
@@ -161,10 +88,6 @@ namespace Database.Models
 
                 entity.Property(e => e.DateCreated).HasColumnName("date_created");
 
-                entity.Property(e => e.File)
-                    .HasColumnType("int unsigned")
-                    .HasColumnName("file");
-
                 entity.Property(e => e.Location)
                     .HasMaxLength(50)
                     .HasColumnName("location");
@@ -176,11 +99,6 @@ namespace Database.Models
                 entity.Property(e => e.User)
                     .HasColumnType("int unsigned")
                     .HasColumnName("user");
-
-                entity.HasOne(d => d.FileNavigation)
-                    .WithMany(p => p.Images)
-                    .HasForeignKey(d => d.File)
-                    .HasConstraintName("FK_images_file_files");
 
                 entity.HasOne(d => d.UserNavigation)
                     .WithMany(p => p.Images)

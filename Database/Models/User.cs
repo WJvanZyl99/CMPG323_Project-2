@@ -9,7 +9,6 @@ namespace Database.Models
     {
         public User()
         {
-            Files = new HashSet<File>();
             Images = new HashSet<Image>();
         }
 
@@ -19,7 +18,6 @@ namespace Database.Models
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public virtual ICollection<File> Files { get; set; }
         public virtual ICollection<Image> Images { get; set; }
     }
 }
