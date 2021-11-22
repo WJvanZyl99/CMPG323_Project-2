@@ -1,21 +1,37 @@
 ﻿@inherits LayoutComponentBase
+@using Database.Models
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavManager
 
 
 <div class="sidebar">
-    <ul class="nav flex-column">
+    @if (user == null)
+    {
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match=@NavLinkMatch.All>
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+            <NavLink class="nav-link" href="login">
+                <span class="oi oi-plus" aria-hidden="true"></span> Login
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-    </ul>
+    }
+    else
+    {
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match=@NavLinkMatch.All>
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="counter">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                </NavLink>
+            </li>
+        </ul>
+    }
+
+
+
 </div>
 
 <div class="main">
@@ -24,3 +40,27 @@
         @Body
     </div>
 </div>
+
+@code {
+    ISession session;
+    User user;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        session = HttpContextAccessor.HttpContext.Session;
+        string userId = session.GetString(Settings.UserSessionSettings.session_user_key);
+        if (userId != null && userId != "")
+            user = Cmpg323Context.DB.Users.Find(UInt32.Parse(userId));
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (user == null && NavManager.Uri != "/login")
+            NavManager.NavigateTo("/login");
+    }
+
+
+}
