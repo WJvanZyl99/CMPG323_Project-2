@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Settings;
 
+
 namespace WebApp
 {
     public class Startup
@@ -26,6 +27,7 @@ namespace WebApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<WebApp.Shared.StateContainer>();
             services.AddHttpContextAccessor();
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(UserSessionSettings.idle_max);
@@ -37,16 +39,7 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            app.UseHsts();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

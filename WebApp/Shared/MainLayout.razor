@@ -3,62 +3,59 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavManager
+@inject StateContainer StateContainer
 
 
 <div class="sidebar">
-    @if (user == null)
+    @if (StateContainer.user == null)
     {
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="oi oi-plus" aria-hidden="true"></span> Login
-            </NavLink>
-        </li>
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="oi oi-account-login" aria-hidden="true"></span> Login
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="register">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Register
+                </NavLink>
+            </li>
+        </ul>
     }
     else
     {
         <ul class="nav flex-column">
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match=@NavLinkMatch.All>
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </NavLink>
-            </li>
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="counter">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                <NavLink class="nav-link" href="my-images">
+                    <span class="oi oi-folder" aria-hidden="true"></span> My Images
                 </NavLink>
             </li>
         </ul>
     }
-
-
-
 </div>
 
 <div class="main">
-
     <div class="content px-4">
         @Body
     </div>
 </div>
 
 @code {
-    ISession session;
-    User user;
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        session = HttpContextAccessor.HttpContext.Session;
-        string userId = session.GetString(Settings.UserSessionSettings.session_user_key);
+        StateContainer.session = HttpContextAccessor.HttpContext.Session;
+        string userId = StateContainer.session.GetString(Settings.UserSessionSettings.session_user_key);
         if (userId != null && userId != "")
-            user = Cmpg323Context.DB.Users.Find(UInt32.Parse(userId));
-
+            StateContainer.user = Cmpg323Context.DB.Users.Find(Int32.Parse(userId));
+        else if (StateContainer.user != null)
+            StateContainer.session.SetString(Settings.UserSessionSettings.session_user_key, StateContainer.user.Idusers.ToString());
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
         base.OnAfterRender(firstRender);
-        if (user == null && NavManager.Uri != "/login")
+        if (StateContainer.user == null && firstRender)
             NavManager.NavigateTo("/login");
     }
 

@@ -1,0 +1,70 @@
+﻿@page "/register"
+@inject NavigationManager NavManager
+@using Database.Models
+
+<h3>Register</h3>
+
+<div style="max-width: 20vw">
+    <input class="form-control"
+           type="text"
+           placeholder="Name" @bind="name" style="margin-top: 20px; margin-bottom: 10px" />
+
+    <input class="form-control"
+           type="text"
+           placeholder="Surame" @bind="surname" style="margin-top: 10px; margin-bottom: 10px" />
+
+    <input class="form-control"
+           type="text"
+           placeholder="Email" @bind="email" style="margin-top: 10px; margin-bottom: 10px" />
+
+    <input class="form-control"
+           type="password"
+           placeholder="Password" @bind="password" style="margin-top: 10px; margin-bottom: 30px" />
+    <input class="form-control"
+           type="password"
+           placeholder="Confirm Password" @bind="password_confirm" style="margin-top: 10px" />
+
+    <input class="form-control" id="LoginButton" type="button" value="Register" @onclick="@register" />
+
+    <label style="margin-top:30px;color:red;">@error</label>
+</div>
+
+@code {
+
+    string name = "";
+    string surname= "";
+    string email= "";
+    string password = "";
+    string password_confirm = "";
+    string error;
+
+    void register()
+    {
+        error = "";
+        if (name == "")
+            error = "Please enter name!";
+        else if (surname == "")
+            error = "Please enter surname!";
+        else if (email == "")
+            error = "Please enter email!";
+        else if (Cmpg323Context.DB.Users.Where(u => u.Email == email).Count() > 0)
+            error = "User with that email already exist";
+        else if (password == "")
+            error = "Please enter password!";
+        else if (password != password_confirm)
+            error = "Passwords does not match!";
+        else
+        {
+            User user = new User();
+            user.Name = name;
+            user.Surname = surname;
+            user.Email = email;
+            Logic.Password p = new Logic.Password(password);
+            user.Password = p.get_encoded_password();
+            Cmpg323Context.DB.Users.Add(user);
+            Cmpg323Context.DB.SaveChanges();
+            NavManager.NavigateTo("/login");
+        }
+    }
+
+}

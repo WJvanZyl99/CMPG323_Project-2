@@ -1,8 +1,55 @@
 ﻿@page "/login"
-@page "/"
+
+@using Database.Models
+@inject StateContainer StateContainer
+@using Microsoft.AspNetCore.Http
+@inject NavigationManager NavManager
 
 <h3>Login</h3>
 
-@code {
+<div style="max-width: 20vw">
+    <input class="form-control"
+           type="text"
+           placeholder="Username" @bind="username" style="margin-top: 20px; margin-bottom: 10px" />
 
+    <input class="form-control"
+           type="password"
+           placeholder="Password" @bind="password" style="margin-top: 10px; margin-bottom: 20px" />
+
+    <input class="form-control" id="LoginButton" type="button" value="Login" @onclick="@login" />
+
+    <label style="margin-top:30px;color:red;">@error</label>
+</div>
+
+
+@code {
+    string username;
+    string password;
+
+    string error;
+
+    void login()
+    {
+        error = "";
+        List<User> users = Cmpg323Context.DB.Users.Where(u => u.Email == username).ToList();
+        if(users.Count > 0)
+        {
+            User user = users.First();
+            Logic.Password p = new Logic.Password(password);
+            if (user.Password == p.get_encoded_password())
+            {
+                StateContainer.user = user;
+                NavManager.NavigateTo("/my-images");
+            }
+            else
+                error = "Incorrect password!";
+        }
+        else
+        {
+            error = "Username does not exist!";
+            username = "";
+        }
+
+        password = "";
+    }
 }
