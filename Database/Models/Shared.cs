@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Database.Models1
+namespace Database.Models
 {
     public partial class Shared
     {

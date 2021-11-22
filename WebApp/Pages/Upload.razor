@@ -1,0 +1,78 @@
+﻿@page "/upload"
+@using System.IO
+@using Database.Models
+@using Microsoft.AspNetCore.Hosting
+@inject StateContainer StateContainer
+@inject IWebHostEnvironment Environment
+
+<h3>Upload</h3>
+
+<div>
+    <label>
+        Upload up to @maxAllowedFiles of up to @maxFileSize MB:
+        <InputFile OnChange="@LoadFiles" multiple />
+    </label>
+
+    @if (isLoading)
+    {
+        <p>Uploading...</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var file in loadedFiles)
+            {
+                <li>
+                    <ul>
+                        <li>Name: @file.Name</li>
+                        <li>Last modified: @file.LastModified.ToString()</li>
+                        <li>Size (bytes): @file.Size</li>
+                        <li>Content type: @file.ContentType</li>
+                    </ul>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private List<IBrowserFile> loadedFiles = new();
+    private long maxFileSize = 10;
+    private int maxAllowedFiles = 100;
+    private bool isLoading;
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+
+                string trustedFileNameForFileStorage;
+
+                do
+                    trustedFileNameForFileStorage = Path.GetRandomFileName();
+                while (Cmpg323Context.DB.Images.Where(i => i.Name == trustedFileNameForFileStorage).Count() > 0);
+
+                var path = Path.Combine(Environment.WebRootPath, "Data", StateContainer.user.Idusers.ToString(), trustedFileNameForFileStorage + Path.GetExtension(file.Name));
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize*1024*1024).CopyToAsync(fs);
+
+                Image i = new Image();
+                i.Name = trustedFileNameForFileStorage + Path.GetExtension(file.Name);
+                i.User = StateContainer.user.Idusers;
+                i.DateCreated = DateTime.Now;
+                Cmpg323Context.DB.Images.Add(i);
+                Cmpg323Context.DB.SaveChanges();
+            }
+            catch { }
+        }
+
+        isLoading = false;
+    }
+}

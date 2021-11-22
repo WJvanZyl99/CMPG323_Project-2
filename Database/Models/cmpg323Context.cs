@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace Database.Models1
+namespace Database.Models
 {
     public partial class Cmpg323Context : DbContext
     {
@@ -104,6 +104,7 @@ namespace Database.Models1
                 entity.HasOne(d => d.UserNavigation)
                     .WithMany(p => p.Images)
                     .HasForeignKey(d => d.User)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_images_user_users");
             });
 

@@ -1,0 +1,13 @@
+﻿@page "/logout"
+@inject StateContainer StateContainer
+@inject NavigationManager NavManager
+
+@code {      
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        StateContainer.user = null;
+        StateContainer.session.Clear();
+        NavManager.NavigateTo("/login");
+    }
+}
