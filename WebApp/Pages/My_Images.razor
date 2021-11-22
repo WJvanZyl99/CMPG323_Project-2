@@ -1,8 +1,9 @@
 ﻿@page "/my-images"
 @inject StateContainer StateContainer
+@using Database.Models
 
 <h3>My Images</h3>
-<h3>@StateContainer.user.Images.Count</h3>
+<h3>@StateContainer.user.Images.ToList().Count()</h3>
 
 <table style="width:100%;">
     @for(int i = 0; i < images.Count(); i++)
@@ -21,7 +22,7 @@
 
 @code {
 
-    List<Database.Models.Image> images;
+    List<Image> images;
 
     protected override void OnInitialized()
     {

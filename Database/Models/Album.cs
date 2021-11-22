@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Database.Models
+namespace Database.Models1
 {
     public partial class Album
     {
         public Album()
         {
-            Shared = new HashSet<Shared>();
+            Shareds = new HashSet<Shared>();
         }
 
         public int Idalbums { get; set; }
@@ -18,6 +18,6 @@ namespace Database.Models
         public int User { get; set; }
         public string Caption { get; set; }
 
-        public virtual ICollection<Shared> Shared { get; set; }
+        public virtual ICollection<Shared> Shareds { get; set; }
     }
 }

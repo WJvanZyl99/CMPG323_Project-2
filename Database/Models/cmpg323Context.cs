@@ -1,19 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using static Settings.DatabaseSettings;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace Database.Models
+namespace Database.Models1
 {
-    public class Cmpg323Context : DbContext
+    public partial class Cmpg323Context : DbContext
     {
         private readonly string _conStr;
 
         public static Cmpg323Context DB;
 
-        private Cmpg323Context() 
+        private Cmpg323Context()
         {
-            _conStr = connection_string;
+            _conStr = Settings.DatabaseSettings.connection_string;
             this.Database.EnsureCreated();
             DB = this;
         }
@@ -194,7 +195,7 @@ namespace Database.Models
                     .HasColumnName("user");
 
                 entity.HasOne(d => d.AlbumNavigation)
-                    .WithMany(p => p.Shared)
+                    .WithMany(p => p.Shareds)
                     .HasForeignKey(d => d.Album)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_shared_album_albums");
@@ -213,6 +214,9 @@ namespace Database.Models
 
                 entity.ToTable("users");
 
+                entity.HasIndex(e => e.Email, "email_UNIQUE")
+                    .IsUnique();
+
                 entity.Property(e => e.Idusers)
                     .HasColumnType("int unsigned")
                     .HasColumnName("idusers");
@@ -229,12 +233,16 @@ namespace Database.Models
                 entity.Property(e => e.Password)
                     .HasMaxLength(64)
                     .HasColumnName("password")
-                    .IsFixedLength();
+                    .IsFixedLength(true);
 
                 entity.Property(e => e.Surname)
                     .HasMaxLength(45)
                     .HasColumnName("surname");
             });
+
+            OnModelCreatingPartial(modelBuilder);
         }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

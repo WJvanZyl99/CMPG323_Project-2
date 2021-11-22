@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Database.Models
+namespace Database.Models1
 {
     public partial class User
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Database.Models
+namespace Database.Models1
 {
     public partial class Image
     {
@@ -13,11 +13,12 @@ namespace Database.Models
         }
 
         public int Idimages { get; set; }
+        public int User { get; set; }
         public string Name { get; set; }
         public DateTime? DateCreated { get; set; }
         public string Location { get; set; }
-        public int User { get; set; }
         public string Caption { get; set; }
+
         public virtual User UserNavigation { get; set; }
         public virtual ICollection<Shared> Shareds { get; set; }
     }
