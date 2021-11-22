@@ -1,0 +1,43 @@
+﻿@using Database.Models
+
+
+<table style="width:100%;">
+
+    @foreach (var block in blocks)
+    {
+        if (counter % columnCount == 1)
+        {
+            @:<tr>
+        }
+
+        <td style="width: 33%;border:5px solid black;">
+            <ImageBlocks block="block" user="user" url="@url"/>
+        </td>
+
+        if (counter % columnCount == 0 || block == blocks.Last())
+        {
+            @:</tr>
+        }
+        counter++;
+        if (counter > columnCount)
+            counter = 1;
+    }
+
+</table>
+
+
+@code {
+    [Parameter]
+    public User user { private get; set; }
+
+    [Parameter]
+    public List<Block> blocks { private get; set; }
+
+    [Parameter]
+    public int columnCount { private get;  set; }
+
+    [Parameter]
+    public string url { private get; set; }
+
+    int counter = 1;
+}

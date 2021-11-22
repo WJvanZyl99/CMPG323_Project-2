@@ -1,0 +1,134 @@
+﻿@using Database.Models 
+@inject NavigationManager Nav
+
+
+<table style="width:100%">
+    <tr>
+        <td colspan="2">
+            <img style="max-height:100%;max-width:100%;width:100%;" src="@block.path" alt="" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            @if (block.img.DateCreated != null)
+            {
+                <p>Uploaded On: @block.img.DateCreated.Value.ToString("d-MMMM-yyyy")</p>
+            }
+            else
+            {
+                <p>Unknown Upload Date!</p>
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input class="form-control" placeholder="Caption" type="text" @bind="caption_text" />
+        </td>
+        <td>
+            <input class="form-control" type="button" value="Update" @onclick="updateCaption" />
+        </td>
+    </tr>
+    @if (block.showShared)
+    {
+        <tr>
+            <td colspan="2">
+                @if (block.img.Shareds.Count > 0)
+                {
+                    @foreach (Database.Models.Shared share in block.img.Shareds)
+                    {
+                        User user = Cmpg323Context.DB.Users.Find(share.User);
+                        if (block.hasShareDelete)
+                        {
+                            <a href="" @onclick="e => deleteShare(share)">@user.Name, </a>
+                        }
+                        else
+                        {
+                            <p>Shared with: @user.Name, </p>
+                        }
+                    }
+                }
+                else
+                {
+                    <p>Shared with: None</p>
+                }
+            </td>
+        </tr>
+    }
+    @if (block.hasShare)
+    {
+        <tr>
+            <td>
+                <input class="form-control" type="text" @bind="share_text" />
+            </td>
+            <td>
+                <input class="form-control" placeholder="Email of user" type="button" value="Share" @onclick="e => share(block.img)" />
+            </td>
+        </tr>
+    }
+    @if (block.hasDelete)
+    {
+        <tr>
+            <td colspan="2">
+                <input class="form-control" type="button" value="Delete" @onclick="e => delete(block)" />
+            </td>
+        </tr>
+        
+    }
+</table>
+
+
+@code {
+    [Parameter]
+    public User user { private get; set; }
+
+    [Parameter]
+    public Block block { private get; set; }
+
+    [Parameter]
+    public string url { private get; set; }
+
+    string share_text;
+    string caption_text;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        caption_text = block.img.Caption;
+    }
+
+    void deleteShare(Shared share)
+    {
+        Cmpg323Context.DB.Remove(share);
+        Cmpg323Context.DB.SaveChanges();
+        Nav.NavigateTo(url, true);
+    }
+
+    void share(Image image)
+    {
+        List<User> users = Cmpg323Context.DB.Users.Where(u => u.Email == share_text).ToList();
+        if (users.Count > 0)
+        {
+            Shared share = new Shared();
+            share.Image = image.Idimages;
+            share.User = users.First().Idusers;
+            Cmpg323Context.DB.Shareds.Add(share);
+            Cmpg323Context.DB.SaveChanges();
+        }
+        share_text = "";
+        Nav.NavigateTo(url, true);
+    }
+
+    void delete(Block block)
+    {
+        Cmpg323Context.DB.Images.Remove(block.img);
+        Cmpg323Context.DB.SaveChanges();
+        Nav.NavigateTo(url, true);
+    }
+
+    void updateCaption()
+    {
+        block.img.Caption = caption_text;
+        Cmpg323Context.DB.SaveChanges();
+        caption_text = "";
+    }
+}

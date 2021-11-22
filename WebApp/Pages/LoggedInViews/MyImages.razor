@@ -1,0 +1,35 @@
+﻿@page "/myimages"
+@inject StateContainer StateContainer
+@using Database.Models
+@inject NavigationManager NavManager
+@using Microsoft.AspNetCore.Hosting
+@using System.IO
+@inject IWebHostEnvironment Environment
+@using WebApp.Pages.LoggedInViews.SharedParts
+
+<h3>My Images</h3>
+
+<BlockTable user="StateContainer.user" columnCount="3" blocks="blocks" url="@url"/>
+
+@code {
+    List<Block> blocks;
+
+    string url = "/myimages";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        List<Image> images = Cmpg323Context.DB.Images.Where(i => i.User == StateContainer.user.Idusers).ToList();
+        blocks = new List<Block>();
+        foreach (var image in images)
+        {
+            Block b = new Block(image, Path.Combine("Data", StateContainer.user.Idusers.ToString(), image.Name));
+            b.hasDelete = true;
+            b.hasShare = true;
+            b.hasShareDelete = true;
+            b.hasSharedWith = true;
+            b.showShared = true;
+            blocks.Add(b);
+        }
+    }
+}
